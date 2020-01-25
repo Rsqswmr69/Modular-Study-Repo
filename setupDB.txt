@@ -1,0 +1,2 @@
+1. Install mariadb https://downloads.mariadb.org/
+2. run this command to setup the database mysql study < studydb.sql
