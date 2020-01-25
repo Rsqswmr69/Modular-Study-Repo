@@ -5,7 +5,7 @@ Here is where we will collaborate on the UMUC 495 Capstone Project. The idea is 
 ### Team:  
 __Team Lead__: Kory Bennett   / Documentation Organizer     
 __Project Manager__: Brock Allton   / Documentation Organizer       
-__Developer__: Dylan Sawyer   / Developer  
-__Developer__: Richard "Dan" Page   / Developer  
-__Developer__: Justin Casey   / Database Integrator   
-__Developer__: Cale Ward   / Gui Developer / SQL  
+__Developer__: Dylan Sawyer   / Database->Parser  
+__Developer__: Richard "Dan" Page   / Parser->GUI  
+__Developer__: Justin Casey   / Database   
+__Developer__: Cale Ward   / Gui Developer 
