@@ -7,7 +7,7 @@ Here is where we will collaborate on the UMUC 495 Capstone Project.
 
 Team:
 Team Lead: Kory Bennett / Documentation Organizer
-Project Manager: Alton Brock / Documentation Organizer
+Project Manager: Brock Allton / Documentation Organizer
 Team Members:
 Dylan Sawyer        / Developer Java
 Justin Casey        / Developer Database Integrator
