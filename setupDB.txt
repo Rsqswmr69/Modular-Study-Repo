@@ -1,2 +1,4 @@
 1. Install mariadb https://downloads.mariadb.org/
-2. run this command to setup the database mysql study < studydb.sql
+2. Setup mysql user account or use root/admin account
+3. run this command to setup the database mysql study < studydb.sql
+4. update the connect info on lines 33-34 on test_program.py to your username and password
