@@ -16,32 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `answers_tbl`
---
-
-DROP TABLE IF EXISTS `answers_tbl`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `answers_tbl` (
-  `answer_id` int(11) NOT NULL AUTO_INCREMENT,
-  `choice_id` int(11) NOT NULL,
-  PRIMARY KEY (`answer_id`),
-  KEY `choice_id` (`choice_id`),
-  CONSTRAINT `answers_tbl_ibfk_1` FOREIGN KEY (`choice_id`) REFERENCES `choices_tbl` (`choice_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `answers_tbl`
---
-
-LOCK TABLES `answers_tbl` WRITE;
-/*!40000 ALTER TABLE `answers_tbl` DISABLE KEYS */;
-INSERT INTO `answers_tbl` VALUES (1,1),(2,5),(3,9);
-/*!40000 ALTER TABLE `answers_tbl` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `choices_tbl`
 --
 
@@ -94,6 +68,33 @@ INSERT INTO `questions_tbl` VALUES (1,'What is the largest ocean'),(2,'How many 
 UNLOCK TABLES;
 
 --
+-- Table structure for table `scores_tbl`
+--
+
+DROP TABLE IF EXISTS `scores_tbl`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `scores_tbl` (
+  `score_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `score` decimal(5,2) DEFAULT NULL,
+  PRIMARY KEY (`score_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `scores_tbl_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users_tbl` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `scores_tbl`
+--
+
+LOCK TABLES `scores_tbl` WRITE;
+/*!40000 ALTER TABLE `scores_tbl` DISABLE KEYS */;
+INSERT INTO `scores_tbl` VALUES (2,1,33.33),(3,1,66.67),(4,1,100.00),(5,1,100.00),(6,1,0.00);
+/*!40000 ALTER TABLE `scores_tbl` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users_tbl`
 --
 
@@ -107,7 +108,7 @@ CREATE TABLE `users_tbl` (
   `user_uname` varchar(20) NOT NULL,
   `user_password` varchar(255) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,6 +117,7 @@ CREATE TABLE `users_tbl` (
 
 LOCK TABLES `users_tbl` WRITE;
 /*!40000 ALTER TABLE `users_tbl` DISABLE KEYS */;
+INSERT INTO `users_tbl` VALUES (1,'Justin','Casey','jcasey','test');
 /*!40000 ALTER TABLE `users_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -128,4 +130,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-01-25 14:26:42
+-- Dump completed on 2020-01-27 16:21:25
