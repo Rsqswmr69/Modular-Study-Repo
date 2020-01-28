@@ -16,6 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `categories_tbl`
+--
+
+DROP TABLE IF EXISTS `categories_tbl`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `categories_tbl` (
+  `category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(20) NOT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `categories_tbl`
+--
+
+LOCK TABLES `categories_tbl` WRITE;
+/*!40000 ALTER TABLE `categories_tbl` DISABLE KEYS */;
+INSERT INTO `categories_tbl` VALUES (1,'Geography');
+/*!40000 ALTER TABLE `categories_tbl` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `choices_tbl`
 --
 
@@ -52,8 +76,11 @@ DROP TABLE IF EXISTS `questions_tbl`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `questions_tbl` (
   `question_id` int(11) NOT NULL AUTO_INCREMENT,
-  `question_text` text DEFAULT NULL,
-  PRIMARY KEY (`question_id`)
+  `question_text` text NOT NULL,
+  `question_category` int(11) DEFAULT NULL,
+  PRIMARY KEY (`question_id`),
+  KEY `question_category` (`question_category`),
+  CONSTRAINT `questions_tbl_ibfk_1` FOREIGN KEY (`question_category`) REFERENCES `categories_tbl` (`category_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -63,7 +90,7 @@ CREATE TABLE `questions_tbl` (
 
 LOCK TABLES `questions_tbl` WRITE;
 /*!40000 ALTER TABLE `questions_tbl` DISABLE KEYS */;
-INSERT INTO `questions_tbl` VALUES (1,'What is the largest ocean'),(2,'How many states are in the United States'),(3,'How many continents are in the world?');
+INSERT INTO `questions_tbl` VALUES (1,'What is the largest ocean',1),(2,'How many states are in the United States',1),(3,'How many continents are in the world?',1);
 /*!40000 ALTER TABLE `questions_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +104,7 @@ DROP TABLE IF EXISTS `scores_tbl`;
 CREATE TABLE `scores_tbl` (
   `score_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `score` decimal(5,2) DEFAULT NULL,
+  `score` decimal(5,2) NOT NULL,
   PRIMARY KEY (`score_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `scores_tbl_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users_tbl` (`user_id`)
@@ -130,4 +157,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-01-27 16:21:25
+-- Dump completed on 2020-01-28 18:48:19
