@@ -1,0 +1,89 @@
+############################################
+######### OVERVIEW OF ALL TABLES ###########
+############################################
+
+select all questions = "SELECT * FROM questions_tbl"
++-------------+------------------------------------------+-------------------+
+| question_id | question_text                            | question_category |
++-------------+------------------------------------------+-------------------+
+|           1 | What is the largest ocean                |                 1 |
+|           2 | How many states are in the United States |                 1 |
+|           3 | How many continents are in the world?    |                 1 |
++-------------+------------------------------------------+-------------------+
+
+
+Select all choices = "SELECT * from choices_tbl"
++-----------+-------------+----------------+------------+
+| choice_id | question_id | choice_text    | is_correct |
++-----------+-------------+----------------+------------+
+|         1 |           1 | Pacific Ocean  |          1 |
+|         2 |           1 | Artic Ocean    |          0 |
+|         3 |           1 | Atlantic Ocean |          0 |
+|         4 |           2 | 51             |          0 |
+|         5 |           2 | 50             |          1 |
+|         6 |           2 | 49             |          0 |
+|         7 |           3 | 10             |          0 |
+|         8 |           3 | 5              |          0 |
+|         9 |           3 | 7              |          1 |
++-----------+-------------+----------------+------------+
+
+
+Select all categories = "SELECT * FROM categories_tbl"
++-------------+-----------+
+| category_id | category  |
++-------------+-----------+
+|           1 | Geography |
++-------------+-----------+
+
+
+select all from scores_tbl = "SELECT * FROM scores_tbl"
++----------+---------+--------+
+| score_id | user_id | score  |
++----------+---------+--------+
+|        2 |       1 |  33.33 |
+|        3 |       1 |  66.67 |
+|        4 |       1 | 100.00 |
+|        5 |       1 | 100.00 |
+|        6 |       1 |   0.00 |
++----------+---------+--------+
+
+
+select all from users_tbl = "SELECT * FROM users_tbl"
++---------+------------+------------+------------+---------------+
+| user_id | user_fname | user_lname | user_uname | user_password |
++---------+------------+------------+------------+---------------+
+|       1 | Justin     | Casey      | jcasey     | test          |
++---------+------------+------------+------------+---------------+
+
+
+############################################
+############## USEFUL QUERIES ##############
+############################################
+
+get number of available questins = "SELECT count(*) from questions_tbl"
++----------+
+| count(*) |
++----------+
+|        3 |
++----------+
+
+print all scores = "SELECT users_tbl.user_fname, users_tbl.user_lname, score FROM scores_tbl INNER JOIN users_tbl ON users_tbl.user_id"
++------------+------------+--------+
+| user_fname | user_lname | score  |
++------------+------------+--------+
+| Justin     | Casey      |  33.33 |
+| Justin     | Casey      |  66.67 |
+| Justin     | Casey      | 100.00 |
+| Justin     | Casey      | 100.00 |
+| Justin     | Casey      |   0.00 |
++------------+------------+--------+
+
+select questions and categories = "SELECT question_id, question_text, categories_tbl.category FROM questions_tbl INNER JOIN categories_tbl ON question_category = category_id
++-------------+------------------------------------------+-----------+
+| question_id | question_text                            | category  |
++-------------+------------------------------------------+-----------+
+|           1 | What is the largest ocean                | Geography |
+|           2 | How many states are in the United States | Geography |
+|           3 | How many continents are in the world?    | Geography |
++-------------+------------------------------------------+-----------+
+
