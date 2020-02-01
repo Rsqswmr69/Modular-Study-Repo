@@ -67,7 +67,10 @@ get number of available questins = "SELECT count(*) from questions_tbl"
 |        3 |
 +----------+
 
-print all scores = "SELECT users_tbl.user_fname, users_tbl.user_lname, score FROM scores_tbl INNER JOIN users_tbl ON users_tbl.user_id"
+print all scores = "SELECT users_tbl.user_fname, users_tbl.user_lname, score 
+                    FROM scores_tbl 
+                    INNER JOIN users_tbl 
+                    ON users_tbl.user_id"
 +------------+------------+--------+
 | user_fname | user_lname | score  |
 +------------+------------+--------+
@@ -78,7 +81,10 @@ print all scores = "SELECT users_tbl.user_fname, users_tbl.user_lname, score FRO
 | Justin     | Casey      |   0.00 |
 +------------+------------+--------+
 
-select questions and categories = "SELECT question_id, question_text, categories_tbl.category FROM questions_tbl INNER JOIN categories_tbl ON question_category = category_id
+select questions and categories = "SELECT question_id, question_text, categories_tbl.category 
+                                   FROM questions_tbl 
+                                   INNER JOIN categories_tbl 
+                                   ON question_category = category_id
 +-------------+------------------------------------------+-----------+
 | question_id | question_text                            | category  |
 +-------------+------------------------------------------+-----------+
@@ -87,3 +93,17 @@ select questions and categories = "SELECT question_id, question_text, categories
 |           3 | How many continents are in the world?    | Geography |
 +-------------+------------------------------------------+-----------+
 
+Select all questions based on category = "SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category 
+                                          FROM questions_tbl 
+                                          INNER JOIN categories_tbl 
+                                          ON questions_tbl.question_category = categories_tbl.category_id 
+                                          WHERE category = 'Geography'"
++-------------+------------------------------------------+-----------+
+| question_id | question_text                            | category  |
++-------------+------------------------------------------+-----------+
+|           1 | What is the largest ocean                | Geography |
+|           2 | How many states are in the United States | Geography |
+|           3 | How many continents are in the world?    | Geography |
++-------------+------------------------------------------+-----------+
+
+Select all questions based on category id = "SELECT * FROM questions_tbl WHERE question_category = 1
