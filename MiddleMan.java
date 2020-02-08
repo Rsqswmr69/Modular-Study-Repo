@@ -17,7 +17,7 @@ public class MiddleMan {
         String PASSWORD = "PH7592K95R";
 
         try {
-            Class.forName("org.mariadb.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
             System.out.println("Connecting");
 
