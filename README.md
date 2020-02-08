@@ -10,6 +10,7 @@ javac -cp ".:./mysql-connector-java-8.0.19.jar" <FILE_NAME>.java
 ```
 java -cp ".:./mysql-connector-java-8.0.19.jar" <FILE_NAME>
 ```
+for windows replace the ':' with ';'
 
 ### Team:  
 __Team Lead__: Kory Bennett   / Documentation Organizer     
