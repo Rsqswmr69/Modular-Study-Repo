@@ -1,39 +1,16 @@
  # Modular-Study-Repo
 Here is where we will collaborate on the UMUC 495 Capstone Project. The idea is that a user can load different databases of quiz questions to study any desired topic. The program would also keep track of what score they achieved, when they achieved it, and which database of questions they used to help them track their studying progress.
 
-### Setup Database
-1. Install mariaDB 
-2. Start mysql
+### Build Instructions
+1. Compile the java files with the mysql_connector.jar 
 ```
-mysql -u root
-<enter password>
+javac -cp ".:./mysql-connector-java-8.0.19.jar" <FILE_NAME>.java
 ```
-3. Create user 
+2. Run the file with the the jar file
 ```
-CREATE USER username@localhost IDENTIFIED BY 'password';
+java -cp ".:./mysql-connector-java-8.0.19.jar" <FILE_NAME>
 ```
-4. Create database
-```
-create database study;
-```
-5. grant user permissions
-```
-GRANT ALL PRIVILEGES ON study.* to 'user'@'localhost';
-```
-6. Exit mysql and import database
-```
-exit
-mysql study < studydb.sql
-```
-7. Start mysql
-```
-mysql -u username -p study
-<enter password>
-```
-8. Test
-```
-SELECT * FROM questions_tbl;
-```
+for windows replace the ':' with ';'
 
 ### Team:  
 __Team Lead__: Kory Bennett   / Documentation Organizer     
