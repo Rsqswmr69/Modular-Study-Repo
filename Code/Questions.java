@@ -104,6 +104,10 @@ public class Questions extends JFrame {
 		submitButton.setBounds(509, 355, 182, 43);
 		contentPane.add(submitButton);
 		
+		/*
+		*  This uses the dbHelper object to get the question elements from the database and put
+		*  them in an arrayList. The list is then shuffled to randomize.
+		*/
 		
 		dbHelper dbHelper = new dbHelper();
 		questionList = dbHelper.getQuestions();
