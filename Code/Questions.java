@@ -15,16 +15,35 @@ import javax.swing.JRadioButton;
 import javax.swing.JProgressBar;
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class Questions extends JFrame {
 	
-	public int totalQuestions;
-	public int questionsLeft;
-	public double score;
-	boolean flag=false;
+	/*
+	 * List to hold the Questions and Answers
+	 */
+	private List<Question> questionList;
+	private int questionCounter;
+	private int questionCountTotal;
+	private Question currentQuestion;
 	
+	public double score;
+	boolean answered;
+	
+	
+	
+	JLabel lblQuestion = new JLabel();
+
+	JRadioButton bRadioButton = new JRadioButton("b)");
+	JRadioButton cRadioButton = new JRadioButton("c)");
+	JRadioButton dRadioButton = new JRadioButton("d)");
+	JRadioButton aRadioButton = new JRadioButton("a)");	
+	JLabel questionLabel = new JLabel("");
 	private JPanel contentPane;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -44,6 +63,7 @@ public class Questions extends JFrame {
 		});
 	}
 
+	
 	/**
 	 * Create the frame.
 	 */
@@ -55,98 +75,129 @@ public class Questions extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		/*
-		 * Database Parser needs to input first question here and subsequent
-		 * questions each time a new question is needed
-		 */
-		JLabel questionLabel = new JLabel("Questions Goes Here\n");
+			
 		questionLabel.setBounds(148, 12, 477, 88);
 		contentPane.add(questionLabel);
 		
-		JRadioButton aRadioButton = new JRadioButton("a)");
 		buttonGroup.add(aRadioButton);
 		aRadioButton.setBounds(148, 150, 149, 23);
 		contentPane.add(aRadioButton);
 		
-		JRadioButton bRadioButton = new JRadioButton("b)");
 		buttonGroup.add(bRadioButton);
 		bRadioButton.setBounds(148, 195, 149, 23);
 		contentPane.add(bRadioButton);
 		
-		JRadioButton cRadioButton = new JRadioButton("c)");
 		buttonGroup.add(cRadioButton);
 		cRadioButton.setBounds(148, 240, 149, 23);
 		contentPane.add(cRadioButton);
 		
-		JRadioButton dRadioButton = new JRadioButton("d)");
 		buttonGroup.add(dRadioButton);
 		dRadioButton.setBounds(148, 285, 149, 23);
 		contentPane.add(dRadioButton);
 		
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setBounds(45, 355, 252, 43);
-		contentPane.add(progressBar);
-		
 		JButton submitButton = new JButton("Submit");
 		submitButton.setToolTipText("Click submit to answer the question\n");
+		
+		lblQuestion.setBounds(20, 12, 94, 36);
+		contentPane.add(lblQuestion);
+		
+		submitButton.setBounds(509, 355, 182, 43);
+		contentPane.add(submitButton);
+		
+		
+		dbHelper dbHelper = new dbHelper();
+		questionList = dbHelper.getQuestions();
+		questionCountTotal = questionList.size();
+		Collections.shuffle(questionList);
+		
+		showQuestion();
+		
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				/*
 				 * Check to see if a button is selected
 				 */
-				if (buttonGroup.getSelection()==null)
-					flag = false;
-				else 
-					flag = true;
-				
-				
-				/*
-				 * Create the Results window when all questions have been answered, add one to the score
-				 * 
-				 */
-				if(questionsLeft==0) {
-					/*
-					 * if no button is selected return
-					 */
-					if (flag==false) {
-						JOptionPane.showMessageDialog(submitButton, "Why not guess an answer if you do not know it?");
-						return;
+				if(!answered) {
+					if (aRadioButton.isSelected()||bRadioButton.isSelected()||cRadioButton.isSelected()||dRadioButton.isSelected()) {
+						checkAnswer();
 					}
-					/*
-					 * if the right answer is selected add 1 to the score
-					 */
-					if(bRadioButton.isSelected()) {
-						score++;
+					else {
+						JOptionPane.showMessageDialog(submitButton, "Why not guess an answer even if you do not know it?");
 					}
-					dispose(); 
-					Results result = new Results();
-					result.setVisible(true);
 				}
-				
 				else {
-					if (flag=false) {
-						JOptionPane.showMessageDialog(submitButton, "Why not guess an answer if you do not know it?");
-					
-					}
-					/*
-					 * Checks whether the answer is correct and restarts the window with a new question
-					 * 
-					 */
-					if(bRadioButton.isSelected()) {
-						score++;
-					}
-					questionsLeft--;
-				//	progressBar.update();
-					dispose();
-					Questions q = new Questions();
-					q.setVisible(true);
-					
+					showQuestion();
 				}
+					
 			}
+			
 		});
-		submitButton.setBounds(509, 355, 182, 43);
-		contentPane.add(submitButton);
+	
+	
+	}
+	private void checkAnswer() {
+		answered = true;
+		
+		/*
+		 * If a) is selected and the answer is a) from the database
+		 * add one to the score...and for b,c, & d
+		 */
+		if (aRadioButton.isSelected()==true) {
+			int answerNr = 1;
+			if (answerNr == currentQuestion.getAnswerNr()) {
+				score++;
+			}
+		}
+		if (bRadioButton.isSelected()==true) {
+			int answerNr = 2;
+			if (answerNr == currentQuestion.getAnswerNr()) {
+				score++;
+			}
+		}
+		if (cRadioButton.isSelected()==true) {
+			int answerNr = 3;
+			if (answerNr == currentQuestion.getAnswerNr()) {
+				score++;
+			}
+		}
+		if (dRadioButton.isSelected()==true) {
+			int answerNr = 4;
+			if (answerNr == currentQuestion.getAnswerNr()) {
+				score++;
+			}
+		}
 		
 	}
+		
+		 
+	
+	private void showQuestion() {
+		/*
+		 * Clears the selected button and resets the question
+		 * based with the next question
+		 */
+		lblQuestion.setText("Question:"+ questionCounter+"/"+questionCountTotal);
+		buttonGroup.clearSelection();
+		answered=false;
+		
+		
+		if(questionCounter < questionCountTotal) {
+			currentQuestion = questionList.get(questionCounter);
+			questionLabel.setText(currentQuestion.getQuestion());
+			aRadioButton.setText(currentQuestion.getOption1());
+			bRadioButton.setText(currentQuestion.getOption2());
+			cRadioButton.setText(currentQuestion.getOption3());
+			dRadioButton.setText(currentQuestion.getOption4());
+			questionCounter++;
+			
+		}
+		else {
+			dispose();
+			Results results= new Results();
+			results.setVisible(true);
+		}
+	}
 }
+      	
+     
+	
