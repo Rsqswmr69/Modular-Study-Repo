@@ -9,20 +9,25 @@ import java.sql.Statement;
 // java -cp ".:./mysql-connector-java-8.0.19.jar" Main
 // On windows replace : with ;
 
+// TODO
+// Parse stuff from SQL into a test format (see queries.txt)
+// Handle individul GUI components from Main.java, track scores
+
 // Main class will be initiliazed by user
 public class Main {
 
     // Method calls and sequencing will go here
     public static void main(String[] args) throws Exception {
-        sqlDump();
+        
+        InitialWindow gui = new InitialWindow();
+        gui.setVisible(true);
+        getQuestions("Geography");
     }
 
-    // Parser method
-    // GUI Window calling methods
-    // Need to figure out the sequence of calling questions from SQL to GUI
+
 
     // Testing SQL connection and dumping contents
-    public static void sqlDump() throws Exception {
+    public static void getQuestions(String category) throws Exception {
 
         // write your code here
         Connection conn = null;
@@ -43,7 +48,7 @@ public class Main {
 
             // create query
             stmt = conn.createStatement();
-            String sql = "SELECT * FROM questions_tbl";
+            String sql = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category FROM questions_tbl INNER JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id WHERE category = '%s'", category);
 
             // execute query store results into results
             results = stmt.executeQuery(sql);
