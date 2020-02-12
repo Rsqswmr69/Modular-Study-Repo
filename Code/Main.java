@@ -3,6 +3,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 // Run and compile with:
 // javac -cp ".:./mysql-connector-java-8.0.19.jar" Main.java 
@@ -54,6 +56,7 @@ public class Main {
             results = stmt.executeQuery(sql);
 
             // loop through results
+            
             while (results.next()) {
                 // store variable based on column name
                 int questionId = results.getInt("question_id");
@@ -62,10 +65,30 @@ public class Main {
                 // prints all questions
                 System.out.println(questionText);
             }
+            
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+       
     }
+    
+    /*
+     * Method that puts the question and answer into a
+     * GUI friendly format. (Cale, 12 FEB)
+     */
+    public List<Question> getQuestions() {
+		List<Question> questionList = new ArrayList<>();
+		//access database
+		Question question = new Question();
+		question.setQuestion("add question from db");  
+		question.setOption1("add opt 1 from db");
+		question.setOption2("add opt 2 from db");
+		question.setOption3("add opt 3 from db");
+		question.setOption4("add opt 4 from db");
+		question.setAnswerNr(2); //from db
+		questionList.add(question);
+		return questionList;
+    }
+        
 }
-
