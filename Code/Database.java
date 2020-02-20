@@ -57,6 +57,26 @@ public class Database {
         return question;
     }
 
+    //Puts questions and answers into a Question container and then puts those Question objects into a List
+    public  List<Question> createQuestionList(String category) throws SQLException {
+            String q = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category, choices_tbl.choice_text, choices_tbl.is_correct FROM questions_tbl INNER JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id INNER JOIN choices_tbl on questions_tbl.question_id = choices_tbl.question_id WHERE category = '%s'", category);
+            results = conn.createStatement().executeQuery(q);
+            List<Question> questionList = new ArrayList<>();
+            // Collect all questions from category and store them in an ArrayList of questions
+            while (results.next()) {
+                Question question = new Question();
+                question.setQuestion(results.getString("question_id"));
+                question.setOption1(results.getString("question_text"));
+                question.setOption2(results.getString("choice_text"));
+                question.setOption3(results.getString("is_correct"));
+          
+                questionList.add(question);
+            }
+		return questionList;
+    }
+    
+    
+    
     // Set category and initialize all questions from that category
     public static void setCategory(String category) throws Exception  {
         try {
