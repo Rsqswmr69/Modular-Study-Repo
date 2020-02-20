@@ -19,8 +19,8 @@ public class Database {
     private static ResultSet results = null;
     private static String USER = "nEHRVrOue2";
     private static String PASSWORD = "PH7592K95R";
-    private static String DATABASE = "nEHRVrOue2";
-    private static String DOMAIN = "remotemysql.com";
+    private static String DATABASE = "study";
+    private static String DOMAIN = "nehrvroue2.cb1ite2ngo4u.us-east-2.rds.amazonaws.com";
     private static String URL = "jdbc:mysql://" + DOMAIN + "/" + DATABASE;
     private static ArrayList<String> categories = new ArrayList<String>();
     private static ArrayList<HashMap<String, String>> questions = new ArrayList<HashMap<String, String>>();
