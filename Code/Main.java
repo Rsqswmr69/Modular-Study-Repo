@@ -27,7 +27,10 @@ public class Main {
         System.out.println(String.format("Question Count: %d", db.getQuestionCount("Geography")));
 
         // Use this to grab all Question objects, then randomize and feed to GUI  
-        db.getQuestions("Geography"); 
+        Question[] questions = db.getQuestions("Geography"); 
+        for (Question q : questions) {
+            System.out.println(q.toString());
+        }
 
         // Database selected, update number of questions in GUI
         // Quiz started, grab questions from database for subject
