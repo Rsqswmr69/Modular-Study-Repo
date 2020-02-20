@@ -26,69 +26,28 @@ public class Question {
 		this.answerNr = answerNr;
 	}
 
-	/*
-	 * Getters and Setters to pull options, question, and answer number from constructer
-	 */
-
-	public String getQuestion() {
-		return question;
-	}
-
-
-	public void setQuestion(String question) {
-		this.question = question;
-	}
-
-
-	public String getOption1() {
-		return option1;
-	}
-
-
-	public void setOption1(String option1) {
-		this.option1 = option1;
-	}
-
-
-	public String getOption2() {
-		return option2;
-	}
-
-
-	public void setOption2(String option2) {
-		this.option2 = option2;
-	}
-
-
-	public String getOption3() {
-		return option3;
-	}
-
-
-	public void setOption3(String option3) {
-		this.option3 = option3;
-	}
-
-
-	public String getOption4() {
-		return option4;
-	}
-
-
-	public void setOption4(String option4) {
-		this.option4 = option4;
-	}
-
-
-	public int getAnswerNr() {
-		return answerNr;
-	}
-
-
-	public void setAnswerNr(int answerNr) {
-		this.answerNr = answerNr;
-	}
+	// Getters
+    public String getQuestion() {return question;}
+    public String getOption1() {return option1;}
+    public String getOption2() {return option2;}
+	public String getOption3() {return option3;}
+    public String getOption4() {return option4;}
+    public int getAnswerNr() {return answerNr;}
+	
+    // Setters
+	public void setQuestion(String question) {this.question = question;}
+	public void setOption1(String option1) {this.option1 = option1;}
+	public void setOption2(String option2) {this.option2 = option2;}
+	public void setOption3(String option3) {this.option3 = option3;}
+	public void setOption4(String option4) {this.option4 = option4;}
+	public void setAnswerNr(int answerNr) {this.answerNr = answerNr;}
 		
+    @Override
+    public String toString() {
+        String str = String.format("Question: %s\nOption1: %s\nOption2: %s\nOption3: %s\nOption4: %s\nAnswer: %d\n", this.question, this.option1, this.option2, this.option3, this.option4, this.answerNr);
+        return str;
+    }
+
 }
 
 

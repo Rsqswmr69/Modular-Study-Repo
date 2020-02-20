@@ -22,77 +22,83 @@ public class Database {
     private static String DATABASE = "study";
     private static String DOMAIN = "nehrvroue2.cb1ite2ngo4u.us-east-2.rds.amazonaws.com";
     private static String URL = "jdbc:mysql://" + DOMAIN + "/" + DATABASE;
-    private static ArrayList<String> categories = new ArrayList<String>();
-    private static ArrayList<HashMap<String, String>> questions = new ArrayList<HashMap<String, String>>();
 
-    // Default database constructor
+    // Default database constructor, sets up initial connection to database
     public Database() throws Exception {
         try {
-            // Setup initial database connection
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
-            String q = String.format("SELECT * from categories_tbl");
-            results = conn.createStatement().executeQuery(q);
-
-            // Extract categories and save them to class variable
-            while (results.next()) {
-                String category = results.getString("category");
-                categories.add(category);
-            }
         } catch (SQLException e) {e.printStackTrace();}
     }
 
     // Returns all categories from database
-    public static ArrayList<String> getCategories() {return categories;}
-    
-    // Returns a single question for a given question ID
-    public static ArrayList<HashMap<String, String>> getQuestion(int questionID) {
+    public static String[] getCategories() {
 
-        ArrayList<HashMap<String, String>> question = new ArrayList<HashMap<String, String>>();
+        ArrayList<String> cList = new ArrayList<String>();
 
-        for (HashMap<String, String> q: questions)
-        {
-            if (Integer.parseInt(q.get("id")) == questionID) {question.add(q);}
-        }
-        return question;
-    }
-
-    //Puts questions and answers into a Question container and then puts those Question objects into a List
-    public  List<Question> createQuestionList(String category) throws SQLException {
-            String q = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category, choices_tbl.choice_text, choices_tbl.is_correct FROM questions_tbl INNER JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id INNER JOIN choices_tbl on questions_tbl.question_id = choices_tbl.question_id WHERE category = '%s'", category);
-            results = conn.createStatement().executeQuery(q);
-            List<Question> questionList = new ArrayList<>();
-            // Collect all questions from category and store them in an ArrayList of questions
-            while (results.next()) {
-                Question question = new Question();
-                question.setQuestion(results.getString("question_id"));
-                question.setOption1(results.getString("question_text"));
-                question.setOption2(results.getString("choice_text"));
-                question.setOption3(results.getString("is_correct"));
-          
-                questionList.add(question);
-            }
-		return questionList;
-    }
-    
-    
-    
-    // Set category and initialize all questions from that category
-    public static void setCategory(String category) throws Exception  {
+        //Request categories
         try {
-            String q = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category, choices_tbl.choice_text, choices_tbl.is_correct FROM questions_tbl INNER JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id INNER JOIN choices_tbl on questions_tbl.question_id = choices_tbl.question_id WHERE category = '%s'", category);
-            results = conn.createStatement().executeQuery(q);
-
-            // Collect all questions from category and store them in an ArrayList of questions
+            
+            String query = String.format("SELECT * from categories_tbl");
+            results = conn.createStatement().executeQuery(query);
+            
+            // Extract results
             while (results.next()) {
-                HashMap<String, String> question = new HashMap<>();
-                question.put("id", results.getString("question_id"));
-                question.put("question", results.getString("question_text"));
-                question.put("choice", results.getString("choice_text"));
-                question.put("value", results.getString("is_correct"));
-                questions.add(question);
+                String category = results.getString("category");
+                cList.add(category);
             }
+
         } catch (SQLException e) {e.printStackTrace();}
+
+        // Return ArrayList as String[]
+        return cList.toArray(new String[cList.size()]);
+    }
+
+    // Returns int number of questions for a given category
+    public static int getQuestionCount(String category) throws Exception {
+
+        try {
+            
+            String query = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category, group_concat(choices_tbl.choice_text), group_concat(choices_tbl.is_correct) FROM questions_tbl JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id JOIN choices_tbl ON questions_tbl.question_id = choices_tbl.question_id WHERE category = '%s' group by questions_tbl.question_id", category);
+            results = conn.createStatement().executeQuery(query);
+
+        } catch (SQLException e) {e.printStackTrace();}
+        
+        results.last();
+        return results.getRow();
+    }
+
+    // Returns an array of question objects for every question in the database
+    public static Question[] getQuestions(String category) throws Exception  {
+        
+        ArrayList<Question> qList = new ArrayList<Question>();
+
+        // Request questions
+        try {
+            String query = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category, group_concat(choices_tbl.choice_text), group_concat(choices_tbl.is_correct) FROM questions_tbl JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id JOIN choices_tbl ON questions_tbl.question_id = choices_tbl.question_id WHERE category = '%s' group by questions_tbl.question_id", category);
+
+            // Create question objects from results
+            // Question(String question, String option1, String option2, String option3, String option4, int answerNr)
+
+            // SQL ResultSet is acting as if it does not have anything for results.next() for some reason???
+            System.out.println("UH HELLO?");
+            System.out.println(results.getString(2));
+
+            // Just need to parse query resultSet into Question objects, and add those into the qList
+            while (results.next()) {
+                Question q = new Question();
+                q.setQuestion(results.getString("question_text"));
+                q.setOption1(results.getString("choice_text"));
+                qList.add(q);
+                System.out.println(q);
+                System.out.println(qList);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return qList.toArray(new Question[qList.size()]);
     }
 }
 
