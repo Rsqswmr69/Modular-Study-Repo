@@ -67,6 +67,8 @@ public class Database {
     public static Question[] getQuestions(String category) throws Exception  {
         ArrayList<Question> qList = new ArrayList<Question>();
         ArrayList<Choice> cList = new ArrayList<>();
+        String[] choices;
+        String[] answers;
 
         // Request questions
         try {
@@ -74,23 +76,39 @@ public class Database {
             Statement stmt = conn.createStatement();
             ResultSet results = stmt.executeQuery(query);
 
+            // set question text
             while (results.next()) {
                 int questiond_id = results.getInt("question_id");
                 String question_text = results.getString("question_text");
-                String[] choices = results.getString(4).split(",");
-                String[] answers = results.getString(5).split(",");
+                choices = results.getString(4).split(",");
+                answers = results.getString(5).split(",");
+
+                // create choice object = 
+                Choice c1 = new Choice();
+                c1.setChoiceText(choices[0]);
+                c1.setIsCorrect(Integer.valueOf(answers[0]));
                 
+                Choice c2 = new Choice();
+                c2.setChoiceText(choices[1]);
+                c2.setIsCorrect(Integer.valueOf(answers[1]));
+                
+                Choice c3 = new Choice();
+                c3.setChoiceText(choices[2]);
+                c3.setIsCorrect(Integer.valueOf(answers[2]));
+
+                Choice c4 = new Choice();
+                c4.setChoiceText(choices[3]);
+                c4.setIsCorrect(Integer.valueOf(answers[3]));
+
                 // create the question object
-                Question q = new Question();
-                q.setQuestion(question_text);
-                q.setOption1(choices[0]);
-                q.setOption2(choices[1]);
-                q.setOption3(choices[2]);
-                q.setOption4(choices[3]);
-                q.setAnswerNr(1);
+                Question q = new Question(question_text, c1, c2, c3, c4);
                 
                 // add to arraylist
                 qList.add(q);
+            }
+
+            for (Question q : qList) {
+                System.out.println(q.toString());
             }
 
         } catch (SQLException e) {
