@@ -107,10 +107,6 @@ public class Database {
                 qList.add(q);
             }
 
-            for (Question q : qList) {
-                System.out.println(q.toString());
-            }
-
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
