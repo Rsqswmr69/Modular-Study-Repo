@@ -84,20 +84,14 @@ public class InitialWindow extends JFrame {
 		JLabel actualNumber = new JLabel();
 
 		if(subjectComboBox.getSelectedItem().equals("Geography")) {
-			int questionCountTotal;
-			List <Question> questionList = new ArrayList<>();
 			Database db = new Database();
-			questionList = db.createQuestionList("Geography");
-			questionCountTotal = questionList.size();
-			actualNumber.setText(Integer.toString(questionCountTotal));
+			int questionCountG= db.getQuestionCount("Geography");			
+			actualNumber.setText(Integer.toString(questionCountG));
 		}
 		if(subjectComboBox.getSelectedItem().equals("Math")) {
-			int questionCountTotal;
-			List <Question> questionList = new ArrayList<>();
 			Database db = new Database();
-			questionList = db.createQuestionList("Math");
-			questionCountTotal = questionList.size();
-			actualNumber.setText(Integer.toString(questionCountTotal));
+			int questionCountM= db.getQuestionCount("Math");			
+			actualNumber.setText(Integer.toString(questionCountM));
 		}
 		actualNumber.setToolTipText("The number of Questions available to study in this subject");
 		actualNumber.setBounds(431, 135, 206, 24);

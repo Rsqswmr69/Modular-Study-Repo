@@ -27,11 +27,12 @@ public class Questions extends JFrame {
 	/*
 	 * List to hold the Questions and Answers
 	 */
-	private List<Question> questionList;
+	private Question[] questionList;
 	private int questionCounter;
 	private int questionCountTotal;
 	private Question currentQuestion;
 	
+	private int i=0;
 	public double score;
 	boolean answered;
 	
@@ -111,9 +112,8 @@ public class Questions extends JFrame {
 		
 		
 		Database db = new Database();
-		questionList = db.createQuestionList("Geography");
-		questionCountTotal = questionList.size();
-		Collections.shuffle(questionList);
+		questionList = db.getQuestions("Geography");
+		questionCountTotal = db.getQuestionCount("Geography");
 	    
 		showQuestion();
 	
@@ -154,7 +154,7 @@ public class Questions extends JFrame {
 		/*
 		 * If a) is selected and the answer is a) from the database
 		 * add one to the score...and for b,c, & d
-		 */
+		 
 		if (aRadioButton.isSelected()==true) {
 			int answerNr = 1;
 			score++;
@@ -180,6 +180,7 @@ public class Questions extends JFrame {
 				score++;
 			}
 		}
+		*/
 		showQuestion();
 	}
 		
@@ -197,15 +198,16 @@ public class Questions extends JFrame {
 	
 		
 		if(questionCounter < questionCountTotal) {
-			currentQuestion = questionList.get(questionCounter);
+			currentQuestion = questionList[i];
 			questionLabel.setText(currentQuestion.getQuestion());
-			aRadioButton.setText(currentQuestion.getOption1());
-			bRadioButton.setText(currentQuestion.getOption2());
-			cRadioButton.setText(currentQuestion.getOption3());
-			dRadioButton.setText(currentQuestion.getOption4());
+			aRadioButton.setText(currentQuestion.getChoice1());
+			bRadioButton.setText(currentQuestion.getChoice2());
+			cRadioButton.setText(currentQuestion.getChoice3());
+			dRadioButton.setText(currentQuestion.getChoice4());
 			questionCounter++;
 			lblQuestion.setText("Question:"+ questionCounter+"/"+questionCountTotal);
 			answered=false;
+			i++;
 			
 		}
 		else {
