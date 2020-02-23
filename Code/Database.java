@@ -5,74 +5,113 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-// Run and compile with:
-// javac -cp ".:./mysql-connector-java-8.0.19.jar" Main.java 
-// java -cp ".:./mysql-connector-java-8.0.19.jar" Main
-// On windows replace : with ;
-
 // Main class will be initiliazed by user
 public class Database {
 
     // Set static variables for database connection
     private static Connection conn = null;
-    private static Statement stmt = null;
-    private static ResultSet results = null;
     private static String USER = "nEHRVrOue2";
     private static String PASSWORD = "PH7592K95R";
     private static String DATABASE = "study";
     private static String DOMAIN = "nehrvroue2.cb1ite2ngo4u.us-east-2.rds.amazonaws.com";
     private static String URL = "jdbc:mysql://" + DOMAIN + "/" + DATABASE;
-    private static ArrayList<String> categories = new ArrayList<String>();
-    private static ArrayList<HashMap<String, String>> questions = new ArrayList<HashMap<String, String>>();
 
-    // Default database constructor
+    // Default database constructor, sets up initial connection to database
     public Database() throws Exception {
         try {
-            // Setup initial database connection
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
-            String q = String.format("SELECT * from categories_tbl");
-            results = conn.createStatement().executeQuery(q);
-
-            // Extract categories and save them to class variable
-            while (results.next()) {
-                String category = results.getString("category");
-                categories.add(category);
-            }
         } catch (SQLException e) {e.printStackTrace();}
     }
 
     // Returns all categories from database
-    public static ArrayList<String> getCategories() {return categories;}
-    
-    // Returns a single question for a given question ID
-    public static ArrayList<HashMap<String, String>> getQuestion(int questionID) {
+    public static String[] getCategories() {
+        ArrayList<String> cList = new ArrayList<String>();
+        //Request categories
+        try {
+            String query = String.format("SELECT * from categories_tbl");
+            Statement stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery(query);
+            
+            // Extract results
+            while (results.next()) {
+                String category = results.getString("category");
+                cList.add(category);
+            }
 
-        ArrayList<HashMap<String, String>> question = new ArrayList<HashMap<String, String>>();
-
-        for (HashMap<String, String> q: questions)
-        {
-            if (Integer.parseInt(q.get("id")) == questionID) {question.add(q);}
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return question;
+        // Return ArrayList as String[]
+        return cList.toArray(new String[cList.size()]);
     }
 
-    // Set category and initialize all questions from that category
-    public static void setCategory(String category) throws Exception  {
-        try {
-            String q = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category, choices_tbl.choice_text, choices_tbl.is_correct FROM questions_tbl INNER JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id INNER JOIN choices_tbl on questions_tbl.question_id = choices_tbl.question_id WHERE category = '%s'", category);
-            results = conn.createStatement().executeQuery(q);
+    // Returns int number of questions for a given category
+    public static int getQuestionCount(String category) throws Exception {
+        ResultSet results = null;
 
-            // Collect all questions from category and store them in an ArrayList of questions
+        try {
+            
+            String query = String.format("select count(*) from questions_tbl join categories_tbl on questions_tbl.question_category = categories_tbl.category_id where category = '%s'", category);
+            Statement stmt = conn.createStatement();
+            results = stmt.executeQuery(query);
+            results.last();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results.getInt("count(*)");
+    }
+
+    // Returns an array of question objects for every question in the database
+    public static Question[] getQuestions(String category) throws Exception  {
+        ArrayList<Question> qList = new ArrayList<Question>();
+        ArrayList<Choice> cList = new ArrayList<>();
+        String[] choices;
+        String[] answers;
+
+        // Request questions
+        try {
+            String query = String.format("SELECT questions_tbl.question_id, questions_tbl.question_text, categories_tbl.category, group_concat(choices_tbl.choice_text), group_concat(choices_tbl.is_correct) FROM questions_tbl JOIN categories_tbl ON questions_tbl.question_category = categories_tbl.category_id JOIN choices_tbl ON questions_tbl.question_id = choices_tbl.question_id WHERE category = '%s' group by questions_tbl.question_id", category);
+            Statement stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery(query);
+
+            // set question text
             while (results.next()) {
-                HashMap<String, String> question = new HashMap<>();
-                question.put("id", results.getString("question_id"));
-                question.put("question", results.getString("question_text"));
-                question.put("choice", results.getString("choice_text"));
-                question.put("value", results.getString("is_correct"));
-                questions.add(question);
+                int questiond_id = results.getInt("question_id");
+                String question_text = results.getString("question_text");
+                choices = results.getString(4).split(",");
+                answers = results.getString(5).split(",");
+
+                // create choice object = 
+                Choice c1 = new Choice();
+                c1.setChoiceText(choices[0]);
+                c1.setIsCorrect(Integer.valueOf(answers[0]));
+                
+                Choice c2 = new Choice();
+                c2.setChoiceText(choices[1]);
+                c2.setIsCorrect(Integer.valueOf(answers[1]));
+                
+                Choice c3 = new Choice();
+                c3.setChoiceText(choices[2]);
+                c3.setIsCorrect(Integer.valueOf(answers[2]));
+
+                Choice c4 = new Choice();
+                c4.setChoiceText(choices[3]);
+                c4.setIsCorrect(Integer.valueOf(answers[3]));
+
+                // create the question object
+                Question q = new Question(question_text, c1, c2, c3, c4);
+                
+                // add to arraylist
+                qList.add(q);
             }
-        } catch (SQLException e) {e.printStackTrace();}
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return qList.toArray(new Question[qList.size()]);
     }
 }
 

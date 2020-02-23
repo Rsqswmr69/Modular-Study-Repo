@@ -27,11 +27,12 @@ public class Questions extends JFrame {
 	/*
 	 * List to hold the Questions and Answers
 	 */
-	private List<Question> questionList;
+	private Question[] questionList;
 	private int questionCounter;
 	private int questionCountTotal;
 	private Question currentQuestion;
 	
+	private int i=0;
 	public double score;
 	boolean answered;
 	
@@ -66,8 +67,9 @@ public class Questions extends JFrame {
 	
 	/**
 	 * Create the frame.
+	 * @throws Exception 
 	 */
-	public Questions() {
+	public Questions() throws Exception {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 739, 457);
@@ -76,46 +78,45 @@ public class Questions extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 			
-		questionLabel.setBounds(148, 12, 477, 88);
+		questionLabel.setBounds(169, 34, 477, 88);
 		contentPane.add(questionLabel);
 		
 		buttonGroup.add(aRadioButton);
-		aRadioButton.setBounds(148, 150, 149, 23);
+		aRadioButton.setBounds(148, 150, 543, 30);
 		contentPane.add(aRadioButton);
 		
 		buttonGroup.add(bRadioButton);
-		bRadioButton.setBounds(148, 195, 149, 23);
+		bRadioButton.setBounds(148, 195, 543, 30);
 		contentPane.add(bRadioButton);
 		
 		buttonGroup.add(cRadioButton);
-		cRadioButton.setBounds(148, 240, 149, 23);
+		cRadioButton.setBounds(148, 240, 543, 30);
 		contentPane.add(cRadioButton);
 		
 		buttonGroup.add(dRadioButton);
-		dRadioButton.setBounds(148, 285, 149, 23);
+		dRadioButton.setBounds(148, 285, 543, 30);
 		contentPane.add(dRadioButton);
 		
 		JButton submitButton = new JButton("Submit");
 		submitButton.setToolTipText("Click submit to answer the question\n");
 		
-		lblQuestion.setBounds(20, 12, 94, 36);
+		lblQuestion.setBounds(20, 12, 132, 36);
 		contentPane.add(lblQuestion);
 		
 		submitButton.setBounds(509, 355, 182, 43);
 		contentPane.add(submitButton);
 		
-		/*
-		*  This uses the dbHelper object to get the question elements from the database and put
-		*  them in an arrayList. The list is then shuffled to randomize.
-		*/
 		
-		dbHelper dbHelper = new dbHelper();
-		questionList = dbHelper.getQuestions();
-		questionCountTotal = questionList.size();
-		Collections.shuffle(questionList);
+	
 		
+		
+		
+		Database db = new Database();
+		questionList = db.getQuestions("Geography");
+		questionCountTotal = db.getQuestionCount("Geography");
+	    
 		showQuestion();
-		
+	
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				/*
@@ -123,14 +124,22 @@ public class Questions extends JFrame {
 				 */
 				if(!answered) {
 					if (aRadioButton.isSelected()||bRadioButton.isSelected()||cRadioButton.isSelected()||dRadioButton.isSelected()) {
-						checkAnswer();
+						try {
+							checkAnswer();
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
 					}
 					else {
 						JOptionPane.showMessageDialog(submitButton, "Why not guess an answer even if you do not know it?");
 					}
 				}
 				else {
-					showQuestion();
+					try {
+						showQuestion();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 					
 			}
@@ -139,17 +148,18 @@ public class Questions extends JFrame {
 	
 	
 	}
-	private void checkAnswer() {
-		answered = true;
+	private void checkAnswer() throws Exception {
+	
 		
 		/*
 		 * If a) is selected and the answer is a) from the database
 		 * add one to the score...and for b,c, & d
-		 */
+		 
 		if (aRadioButton.isSelected()==true) {
 			int answerNr = 1;
+			score++;
 			if (answerNr == currentQuestion.getAnswerNr()) {
-				score++;
+				
 			}
 		}
 		if (bRadioButton.isSelected()==true) {
@@ -170,35 +180,46 @@ public class Questions extends JFrame {
 				score++;
 			}
 		}
-		
+		*/
+		showQuestion();
 	}
 		
-		 
+	public double getScore() {
+		return score;
+	}
 	
-	private void showQuestion() {
+	private void showQuestion() throws Exception {
 		/*
 		 * Clears the selected button and resets the question
 		 * based with the next question
 		 */
-		lblQuestion.setText("Question:"+ questionCounter+"/"+questionCountTotal);
 		buttonGroup.clearSelection();
-		answered=false;
 		
+	
 		
 		if(questionCounter < questionCountTotal) {
-			currentQuestion = questionList.get(questionCounter);
+			currentQuestion = questionList[i];
 			questionLabel.setText(currentQuestion.getQuestion());
-			aRadioButton.setText(currentQuestion.getOption1());
-			bRadioButton.setText(currentQuestion.getOption2());
-			cRadioButton.setText(currentQuestion.getOption3());
-			dRadioButton.setText(currentQuestion.getOption4());
+			aRadioButton.setText(currentQuestion.getChoice1());
+			bRadioButton.setText(currentQuestion.getChoice2());
+			cRadioButton.setText(currentQuestion.getChoice3());
+			dRadioButton.setText(currentQuestion.getChoice4());
 			questionCounter++;
+			lblQuestion.setText("Question:"+ questionCounter+"/"+questionCountTotal);
+			answered=false;
+			i++;
 			
 		}
 		else {
 			dispose();
-			Results results= new Results();
-			results.setVisible(true);
+			try {
+				Results results = new Results();
+				results.setVisible(true);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

@@ -38,8 +38,9 @@ public class Results extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws Exception 
 	 */
-	public Results() {
+	public Results() throws Exception {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 739, 457);
 		contentPane = new JPanel();
@@ -51,16 +52,27 @@ public class Results extends JFrame {
 		completeLabel.setBounds(156, 49, 320, 80);
 		contentPane.add(completeLabel);
 		
-		JLabel scoreLabel = new JLabel("Score:");
+		
+		Questions q = new Questions();
+		double score = q.getScore();
+		
+		
+		JLabel scoreLabel = new JLabel("Score:      "  + score);
 		scoreLabel.setBounds(156, 162, 305, 46);
 		contentPane.add(scoreLabel);
 		
 		JButton restartButton = new JButton("Restart");
 		restartButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InitialWindow iW = new InitialWindow();
-				dispose();
-				iW.setVisible(true);
+				try {
+					dispose();
+					InitialWindow iW = new InitialWindow();
+					iW.setVisible(true);
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 			}
 		});
