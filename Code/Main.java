@@ -16,6 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.awt.event.ActionEvent;
 public class Main extends JFrame{
@@ -28,6 +30,7 @@ public class Main extends JFrame{
 	//initial variables
 	public static int totalQuestions;
 	public static int testableQuestions;
+	public static String category = "Geography";
 	
 	//Quiz variables
 	public static JRadioButton bRadioButton = new JRadioButton("b)");
@@ -70,6 +73,12 @@ public class Main extends JFrame{
 			intialWindow.setContentPane(contentPane);
 			contentPane.setLayout(null);
 			
+			JLabel actualNumber = new JLabel();
+			actualNumber.setText(Integer.toString(db.getQuestionCount("Geography")));
+			actualNumber.setToolTipText("The number of Questions available to study in this subject");
+			actualNumber.setBounds(431, 135, 206, 24);
+			contentPane.add(actualNumber);
+			
 			/*
 			 * Subject A is autoselected to start 
 			 */
@@ -78,32 +87,55 @@ public class Main extends JFrame{
 			subjectComboBox.setModel(new DefaultComboBoxModel(new String[] {"Geography", "Math", "Subject C", "Subject D"}));
 			subjectComboBox.setBounds(109, 50, 246, 24);
 			contentPane.add(subjectComboBox);
+			subjectComboBox.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e2) {
+					category = (String) subjectComboBox.getSelectedItem();
+					if(category == "Geography") {
+						int questionCountG;
+						try {
+							questionCountG = db.getQuestionCount("Geography");
+							actualNumber.setText(Integer.toString(questionCountG));
+
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+							}
+					if(category == "Math") {
+						int questionCountM;
+						try {
+							questionCountM = db.getQuestionCount("Math");
+							actualNumber.setText(Integer.toString(questionCountM));
+
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+					}
+					if(category == "Math") {
+						int questionCountM;
+						try {
+							questionCountM = db.getQuestionCount("Math");
+							actualNumber.setText(Integer.toString(questionCountM));
+
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+					}
+
+				}
+			});
+			
 			
 			JLabel numberOfQuestionsAvailable = new JLabel("# of Questions Available");
 			numberOfQuestionsAvailable.setToolTipText("The number of Questions available to study in this subject");
 			numberOfQuestionsAvailable.setFont(new Font("Monospaced", Font.BOLD, 15));
 			numberOfQuestionsAvailable.setBounds(138, 124, 309, 47);
 			contentPane.add(numberOfQuestionsAvailable);
+	
 			
-			/*
-			 * This is where the initial set up is with the first drop down menu item selected. 
-			 * The parser should find the number of questions available and display it where I 
-			 * have hardcoded a 9 in. 
-			 */
 			
-			JLabel actualNumber = new JLabel();
-			
-			if(subjectComboBox.getSelectedItem().equals("Geography")) {
-				int questionCountG= db.getQuestionCount("Geography");			
-				actualNumber.setText(Integer.toString(questionCountG));
-					}
-			if(subjectComboBox.getSelectedItem().equals("Math")) {
-				int questionCountM= db.getQuestionCount("Math");			
-				actualNumber.setText(Integer.toString(questionCountM));
-			}
-			actualNumber.setToolTipText("The number of Questions available to study in this subject");
-			actualNumber.setBounds(431, 135, 206, 24);
-			contentPane.add(actualNumber);
 			
 			JLabel EnterLabel = new JLabel("Enter the # of Questions to study:");
 			EnterLabel.setToolTipText("");
@@ -111,9 +143,8 @@ public class Main extends JFrame{
 			EnterLabel.setBounds(138, 204, 354, 40);
 			contentPane.add(EnterLabel);
 			
-			/*
-			 * This is where the user would type in the number of questions they want. 
-			 */
+			
+			 
 			userNumberOfQuestionsTF = new JTextField();
 			userNumberOfQuestionsTF.setBounds(431, 215, 114, 19);
 			contentPane.add(userNumberOfQuestionsTF);
@@ -142,6 +173,8 @@ public class Main extends JFrame{
 						 * Closes the window and opens up the question window
 						 */
 					else {
+						
+						questionCountTotal = Integer.parseInt(userNumberOfQuestionsTF.getText());
 						intialWindow.dispose();
 						try {
 							questionsGUI();
@@ -263,8 +296,12 @@ public class Main extends JFrame{
 			contentPane.add(submitButton);
 						
 			Database db = new Database();
-			questionList = db.getQuestions("Geography");
-			questionCountTotal = db.getQuestionCount("Geography");
+			questionList = db.getQuestions(category);
+			List<Question> qList = Arrays.asList(questionList);
+			Collections.shuffle(qList);
+			qList.toArray(questionList);
+			
+
 			
 			showQuestion();
 				
@@ -324,6 +361,9 @@ public class Main extends JFrame{
 			restartButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
+						i=0;
+						score=0;
+						questionCounter=0;
 						resultsWindow.dispose();
 						initialGUI();
 					} catch (Exception e1) {
