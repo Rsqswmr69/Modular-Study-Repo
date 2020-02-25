@@ -1,5 +1,6 @@
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
 import java.awt.event.ActionEvent;
 public class Main extends JFrame{
 	
@@ -37,6 +39,7 @@ public class Main extends JFrame{
 	public static JRadioButton cRadioButton = new JRadioButton("c)");
 	public static JRadioButton dRadioButton = new JRadioButton("d)");
 	public static JRadioButton aRadioButton = new JRadioButton("a)");	
+	public static JButton submitButton = new JButton("Submit");
 	public static JLabel questionLabel = new JLabel("");
 	public static JPanel contentPane;
 	public static final ButtonGroup buttonGroup = new ButtonGroup();
@@ -48,6 +51,7 @@ public class Main extends JFrame{
 	public static int i=0;
 	public static double score;
 	public static boolean answered;
+	public static long timeElapsed;
 
 	//results variables
 	
@@ -84,7 +88,7 @@ public class Main extends JFrame{
 			 */
 			JComboBox subjectComboBox = new JComboBox();
 			subjectComboBox.setToolTipText("Click the arrow and select the course you would like to study");
-			subjectComboBox.setModel(new DefaultComboBoxModel(new String[] {"Geography", "Math", "Subject C", "Subject D"}));
+			subjectComboBox.setModel(new DefaultComboBoxModel(new String[] {"Geography", "Math", "History"}));
 			subjectComboBox.setBounds(109, 50, 246, 24);
 			contentPane.add(subjectComboBox);
 			subjectComboBox.addActionListener(new ActionListener() {
@@ -112,10 +116,10 @@ public class Main extends JFrame{
 							e.printStackTrace();
 						}			
 					}
-					if(category == "Math") {
+					if(category == "History") {
 						int questionCountM;
 						try {
-							questionCountM = db.getQuestionCount("Math");
+							questionCountM = db.getQuestionCount("History");
 							actualNumber.setText(Integer.toString(questionCountM));
 
 						} catch (Exception e) {
@@ -191,18 +195,16 @@ public class Main extends JFrame{
 		}//end initialGUI
 		
 		
-		
-		
-		
-		
-		
 		private static void showQuestion() throws Exception {
 			/*
 			 * Clears the selected button and resets the question
 			 * based with the next question
 			 */
+			aRadioButton.setForeground(Color.BLACK);
+			bRadioButton.setForeground(Color.BLACK);
+			cRadioButton.setForeground(Color.BLACK);
+			dRadioButton.setForeground(Color.BLACK);
 			buttonGroup.clearSelection();
-	
 			if(questionCounter < questionCountTotal) {
 				currentQuestion = questionList[i];
 				questionLabel.setText(currentQuestion.getQuestion());
@@ -217,45 +219,72 @@ public class Main extends JFrame{
 				
 			}
 			else {
-				score = (score / questionCountTotal)*100;
-				quizWindow.dispose();
-				try {
-					resultsGUI();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				endQuiz();
+			}
+		}
+		
+		private static void endQuiz() {
+			score = (score / questionCountTotal)*100;
+			quizWindow.dispose();
+			try {
+				resultsGUI();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
 		private static void checkAnswer() throws Exception {
-			
+			answered = true;
 			if (aRadioButton.isSelected()==true) {
-				int answerNr = 1;
-				if (answerNr == (currentQuestion.getChoiceChoice1().isCorrect())) {
+				if (1 == (currentQuestion.getChoiceChoice1().isCorrect())) {
 					score++;
 				}
 			}
 			if (bRadioButton.isSelected()==true) {
-				int answerNr = 1;
-				if (answerNr == (currentQuestion.getChoiceChoice2().isCorrect())) {
+				if (1 == (currentQuestion.getChoiceChoice2().isCorrect())) {
 					score++;
 				}
 			}
 			if (cRadioButton.isSelected()==true) {
-				int answerNr = 1;
-				if (answerNr == (currentQuestion.getChoiceChoice3().isCorrect())) {
+				if (1 == (currentQuestion.getChoiceChoice3().isCorrect())) {
 					score++;
 				}
 			}
 			if (dRadioButton.isSelected()==true) {
-				int answerNr = 1;
-				if (answerNr == (currentQuestion.getChoiceChoice4().isCorrect())) {
+				if (1 == (currentQuestion.getChoiceChoice4().isCorrect())) {
 					score++;
 				}
 			}
-			showQuestion();
+				highlightAnswer();
 		}
+		
+		private static void highlightAnswer() {
+			aRadioButton.setForeground(Color.RED);
+			bRadioButton.setForeground(Color.RED);
+			cRadioButton.setForeground(Color.RED);
+			dRadioButton.setForeground(Color.RED);
+
+			if (currentQuestion.getChoiceChoice1().isCorrect()==1) {
+				aRadioButton.setForeground(Color.GREEN);
+			}
+			if (currentQuestion.getChoiceChoice2().isCorrect()==1) {
+				bRadioButton.setForeground(Color.GREEN);
+			}
+			if (currentQuestion.getChoiceChoice3().isCorrect()==1) {
+				cRadioButton.setForeground(Color.GREEN);
+			}
+			if (currentQuestion.getChoiceChoice4().isCorrect()==1) {
+				dRadioButton.setForeground(Color.GREEN);
+			}
+			if (questionCounter<questionCountTotal) {
+				submitButton.setText("Next");
+			}
+			else {
+				submitButton.setText("Turn In");
+			}
+		}
+		
 		
 		//QuestionWindowGUI
 		public static void questionsGUI() throws Exception {	
@@ -286,7 +315,6 @@ public class Main extends JFrame{
 			dRadioButton.setBounds(148, 285, 543, 30);
 			contentPane.add(dRadioButton);
 			
-			JButton submitButton = new JButton("Submit");
 			submitButton.setToolTipText("Click submit to answer the question\n");
 			
 			lblQuestion.setBounds(20, 12, 132, 36);
@@ -300,8 +328,6 @@ public class Main extends JFrame{
 			List<Question> qList = Arrays.asList(questionList);
 			Collections.shuffle(qList);
 			qList.toArray(questionList);
-			
-
 			
 			showQuestion();
 				
