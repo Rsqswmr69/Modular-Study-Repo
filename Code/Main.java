@@ -22,9 +22,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.awt.event.ActionEvent;
+
+// javac -cp ".:./mysql-connector-java-8.0.19.jar" Main.java
+// java -cp ".:./mysql-connector-java-8.0.19.jar" Main
+// Replace : with ; for windows
+
 public class Main extends JFrame{
 	
-
 	public static JFrame intialWindow = new JFrame();
 	public static JFrame quizWindow = new JFrame();
 	public static JFrame resultsWindow = new JFrame();
@@ -53,22 +57,18 @@ public class Main extends JFrame{
 	public static boolean answered;
 	public static long timeElapsed;
 
-	//results variables
-	
-	
-		public static void main(String args[]) throws Exception {
-
-			initialGUI();
-			
-		}
+		// Main function initializes main window
+		public static void main(String args[]) throws Exception {initialGUI();}
 		
-			
+		// Main window cosntructor
 		public static void initialGUI() throws Exception {	
+			
+			// Setup database connection
 			Database db = new Database();
 
+			// JPanel setup
 			JPanel contentPane;
 			JTextField userNumberOfQuestionsTF;		
-			
 			intialWindow.setResizable(false);
 			intialWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			intialWindow.setBounds(100, 100, 739, 457);
@@ -77,83 +77,52 @@ public class Main extends JFrame{
 			intialWindow.setContentPane(contentPane);
 			contentPane.setLayout(null);
 			
+			// Combo box setup
+			JComboBox subjectComboBox = new JComboBox();
+			subjectComboBox.setToolTipText("Click the arrow and select the course you would like to study");
+			subjectComboBox.setModel(new DefaultComboBoxModel(db.getCategories()));
+			subjectComboBox.setBounds(109, 50, 246, 24);
+			contentPane.add(subjectComboBox);
+			
+			// Question count setup
 			JLabel actualNumber = new JLabel();
-			actualNumber.setText(Integer.toString(db.getQuestionCount("Geography")));
+			category = (String) subjectComboBox.getSelectedItem();
+			actualNumber.setText(Integer.toString(db.getQuestionCount(category)));
 			actualNumber.setToolTipText("The number of Questions available to study in this subject");
 			actualNumber.setBounds(431, 135, 206, 24);
 			contentPane.add(actualNumber);
 			
-			/*
-			 * Subject A is autoselected to start 
-			 */
-			JComboBox subjectComboBox = new JComboBox();
-			subjectComboBox.setToolTipText("Click the arrow and select the course you would like to study");
-			subjectComboBox.setModel(new DefaultComboBoxModel(new String[] {"Geography", "Math", "History"}));
-			subjectComboBox.setBounds(109, 50, 246, 24);
-			contentPane.add(subjectComboBox);
+			// Updates combo box and question count via user input
 			subjectComboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e2) {
 					category = (String) subjectComboBox.getSelectedItem();
-					if(category == "Geography") {
-						int questionCountG;
-						try {
-							questionCountG = db.getQuestionCount("Geography");
-							actualNumber.setText(Integer.toString(questionCountG));
-
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}			
-							}
-					if(category == "Math") {
-						int questionCountM;
-						try {
-							questionCountM = db.getQuestionCount("Math");
-							actualNumber.setText(Integer.toString(questionCountM));
-
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}			
-					}
-					if(category == "History") {
-						int questionCountM;
-						try {
-							questionCountM = db.getQuestionCount("History");
-							actualNumber.setText(Integer.toString(questionCountM));
-
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}			
-					}
-
+					int questionCountG;
+					try {
+						questionCountG = db.getQuestionCount(category);
+						actualNumber.setText(Integer.toString(questionCountG));
+					} catch (Exception e) {e.printStackTrace();}
 				}
 			});
 			
-			
+			// Setup labeling
 			JLabel numberOfQuestionsAvailable = new JLabel("# of Questions Available");
 			numberOfQuestionsAvailable.setToolTipText("The number of Questions available to study in this subject");
 			numberOfQuestionsAvailable.setFont(new Font("Monospaced", Font.BOLD, 15));
 			numberOfQuestionsAvailable.setBounds(138, 124, 309, 47);
 			contentPane.add(numberOfQuestionsAvailable);
-	
 			
-			
-			
+			// Setup number of question entry
 			JLabel EnterLabel = new JLabel("Enter the # of Questions to study:");
 			EnterLabel.setToolTipText("");
 			EnterLabel.setFont(new Font("Lucida Sans Typewriter", Font.BOLD, 13));
 			EnterLabel.setBounds(138, 204, 354, 40);
 			contentPane.add(EnterLabel);
-			
-			
-			 
 			userNumberOfQuestionsTF = new JTextField();
 			userNumberOfQuestionsTF.setBounds(431, 215, 114, 19);
 			contentPane.add(userNumberOfQuestionsTF);
 			userNumberOfQuestionsTF.setColumns(10);
 			
+			// Start button
 			JButton startButton = new JButton("Start");
 			startButton.setToolTipText("Click start to begin the test once you have entered a subject and the number of questions");
 			startButton.addActionListener(new ActionListener() {
@@ -387,10 +356,18 @@ public class Main extends JFrame{
 			restartButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						i=0;
-						score=0;
-						questionCounter=0;
 						resultsWindow.dispose();
+						totalQuestions = 0;
+						testableQuestions = 0;
+						category = "Geography";
+						questionList = null;
+						questionCounter = 0;
+						questionCountTotal = 0;
+						currentQuestion = null;
+						i=0;
+						score = 0;
+						answered = false;
+						timeElapsed = 0;
 						initialGUI();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
