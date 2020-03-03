@@ -1,3 +1,5 @@
+package modularStudy;
+
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,9 +25,9 @@ import java.util.List;
 import java.util.Timer;
 import java.awt.event.ActionEvent;
 
-// javac -cp ".:./mysql-connector-java-8.0.19.jar" Main.java
-// java -cp ".:./mysql-connector-java-8.0.19.jar" Main
-// Replace : with ; for windows
+// javac -cp ".;./mysql-connector-java-8.0.19.jar" *.java
+// java -cp ".;./mysql-connector-java-8.0.19.jar" Main
+// Replace ; with : for Linux
 
 public class Main extends JFrame{
 	

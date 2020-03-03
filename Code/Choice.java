@@ -1,3 +1,5 @@
+package modularStudy;
+
 // Helper class for storing answers for Question class
 public class Choice {
     private int choiceId;
