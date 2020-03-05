@@ -29,9 +29,9 @@ import java.awt.event.ActionEvent;
 
 public class Main extends JFrame{
 	
-	public static JFrame intialWindow = new JFrame();
-	public static JFrame quizWindow = new JFrame();
-	public static JFrame resultsWindow = new JFrame();
+	public static JFrame intialWindow = new JFrame("Mod Study Program");
+	public static JFrame quizWindow = new JFrame("Mod Study Program");
+	public static JFrame resultsWindow = new JFrame("Mod Study Program");
 
 	//initial variables
 	public static int totalQuestions;
