@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Timer;
 import java.awt.event.ActionEvent;
 
-// javac -cp ".:./mysql-connector-java-8.0.19.jar" Main.java
-// java -cp ".:./mysql-connector-java-8.0.19.jar" Main
-// Replace : with ; for windows
+// javac -cp ".;./mysql-connector-java-8.0.19.jar" *.java
+// java -cp ".;./mysql-connector-java-8.0.19.jar" Main
+// Replace ; with : for Linux
 
 public class Main extends JFrame{
 	
@@ -150,7 +150,7 @@ public class Main extends JFrame{
 						questionCountTotal = Integer.parseInt(userNumberOfQuestionsTF.getText());
 						intialWindow.dispose();
 						try {
-							questionsGUI();
+							questionsGUI(db);
 						} catch (Exception e1) {
 								// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -229,6 +229,7 @@ public class Main extends JFrame{
 		}
 		
 		private static void highlightAnswer() {
+			
 			aRadioButton.setForeground(Color.RED);
 			bRadioButton.setForeground(Color.RED);
 			cRadioButton.setForeground(Color.RED);
@@ -246,6 +247,14 @@ public class Main extends JFrame{
 			if (currentQuestion.getChoiceChoice4().isCorrect()==1) {
 				dRadioButton.setForeground(Color.GREEN);
 			}
+			
+			// DEBUG
+			System.out.println(questionCounter);
+			System.out.println("/");
+			System.out.println(questionCountTotal);
+			System.out.println();
+			
+			
 			if (questionCounter<questionCountTotal) {
 				submitButton.setText("Next");
 			}
@@ -256,7 +265,7 @@ public class Main extends JFrame{
 		
 		
 		//QuestionWindowGUI
-		public static void questionsGUI() throws Exception {	
+		public static void questionsGUI(Database db) throws Exception {	
 			quizWindow.setResizable(false);
 			quizWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			quizWindow.	setBounds(100, 100, 739, 457);
@@ -292,7 +301,6 @@ public class Main extends JFrame{
 			submitButton.setBounds(509, 355, 182, 43);
 			contentPane.add(submitButton);
 						
-			Database db = new Database();
 			questionList = db.getQuestions(category);
 			List<Question> qList = Arrays.asList(questionList);
 			Collections.shuffle(qList);
@@ -351,33 +359,6 @@ public class Main extends JFrame{
 			JLabel scoreLabel = new JLabel("Score:      " + score+" %");
 			scoreLabel.setBounds(156, 162, 305, 46);
 			contentPane.add(scoreLabel);
-			
-			JButton restartButton = new JButton("Restart");
-			restartButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					try {
-						resultsWindow.dispose();
-						totalQuestions = 0;
-						testableQuestions = 0;
-						category = "Geography";
-						questionList = null;
-						questionCounter = 0;
-						questionCountTotal = 0;
-						currentQuestion = null;
-						i=0;
-						score = 0;
-						answered = false;
-						timeElapsed = 0;
-						initialGUI();
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-						
-				}
-			});
-			restartButton.setBounds(87, 278, 233, 66);
-			contentPane.add(restartButton);
 				
 			JButton exitButton = new JButton("Exit");
 			exitButton.addActionListener(new ActionListener() {
