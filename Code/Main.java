@@ -248,13 +248,6 @@ public class Main extends JFrame{
 				dRadioButton.setForeground(Color.GREEN);
 			}
 			
-			// DEBUG
-			System.out.println(questionCounter);
-			System.out.println("/");
-			System.out.println(questionCountTotal);
-			System.out.println();
-			
-			
 			if (questionCounter<questionCountTotal) {
 				submitButton.setText("Next");
 			}
