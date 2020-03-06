@@ -29,9 +29,9 @@ import java.awt.event.ActionEvent;
 
 public class Main extends JFrame{
 	
-	public static JFrame intialWindow = new JFrame();
-	public static JFrame quizWindow = new JFrame();
-	public static JFrame resultsWindow = new JFrame();
+	public static JFrame intialWindow = new JFrame("Mod Study Program");
+	public static JFrame quizWindow = new JFrame("Mod Study Program");
+	public static JFrame resultsWindow = new JFrame("Mod Study Program");
 
 	//initial variables
 	public static int totalQuestions;
@@ -247,13 +247,6 @@ public class Main extends JFrame{
 			if (currentQuestion.getChoiceChoice4().isCorrect()==1) {
 				dRadioButton.setForeground(Color.GREEN);
 			}
-			
-			// DEBUG
-			System.out.println(questionCounter);
-			System.out.println("/");
-			System.out.println(questionCountTotal);
-			System.out.println();
-			
 			
 			if (questionCounter<questionCountTotal) {
 				submitButton.setText("Next");
